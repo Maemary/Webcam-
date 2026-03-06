@@ -5,45 +5,54 @@ const strip = document.querySelector('.strip');
 const snap = document.querySelector('.snap');
 const startBtn = document.getElementById('start-camera');
 
+let intervalId;
+
+// Start camera after user interaction
+startBtn.addEventListener('click', () => {
+  startBtn.style.display = 'none'; // hide button
+  getVideo();
+});
+
 
 function getVideo() {
   navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-    .then(localMediaStream => {
-      console.log(localMediaStream);
-    
-//  DEPRECIATION : 
-//       The following has been depreceated by major browsers as of Chrome and Firefox.
-//       video.src = window.URL.createObjectURL(localMediaStream);
-//       Please refer to these:
-//       Deprecated  - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
-//       Newer Syntax - https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject
-      
-      video.srcObject = localMediaStream;
-      video.play();
+    .then(stream => {
+      video.srcObject = stream;
+
+      // On mobile, must play after user gesture
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log("Autoplay blocked:", error);
+        }).then(() => {
+          video.addEventListener('loadedmetadata', () => {
+            paintToCanvas();
+          });
+        });
+      } else {
+        video.addEventListener('loadedmetadata', () => {
+          paintToCanvas();
+        });
+      }
     })
-    .catch(err => {
-      console.error(`OH NO!!!`, err);
-    });
+    .catch(err => console.error('Camera error:', err));
 }
 
 function paintToCanvas() {
-  const width = video.videoWidth > 640 ? 640 : video.videoWidth;
+  const maxWidth = 640;
+  const width = video.videoWidth > maxWidth ? maxWidth : video.videoWidth;
   const height = video.videoHeight * (width / video.videoWidth);
   canvas.width = width;
   canvas.height = height;
 
-  return setInterval(() => {
+  intervalId = setInterval(() => {
     ctx.drawImage(video, 0, 0, width, height);
-    // take the pixels out
     let pixels = ctx.getImageData(0, 0, width, height);
-    // mess with them
-    // pixels = redEffect(pixels);
 
+    // Apply effect
     pixels = rgbSplit(pixels);
-     ctx.globalAlpha = 0.8;
+    ctx.globalAlpha = 0.8;
 
-    // pixels = greenScreen(pixels);
-    // put them back
     ctx.putImageData(pixels, 0, 0);
   }, 16);
 }
@@ -58,7 +67,7 @@ function takePhoto() {
   const link = document.createElement('a');
   link.href = data;
   link.setAttribute('download', 'handsome');
-  link.innerHTML = `<img src="${data}" alt="Handsome Man" />`;
+  link.innerHTML = `<img src="${data}" alt="Captures Photo" />`;
   strip.insertBefore(link, strip.firstChild);
 }
 
