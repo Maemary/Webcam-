@@ -8,10 +8,7 @@ const startBtn = document.getElementById('start-camera');
 let intervalId;
 
 // Start camera after user interaction
-startBtn.addEventListener('click', () => {
-  startBtn.style.display = 'none'; // hide button
-  getVideo();
-});
+
 
 
 function getVideo() {
@@ -49,10 +46,14 @@ function paintToCanvas() {
     ctx.drawImage(video, 0, 0, width, height);
     let pixels = ctx.getImageData(0, 0, width, height);
 
-    // Apply effect
-    pixels = rgbSplit(pixels);
-    ctx.globalAlpha = 0.8;
+    // mess with them
+    // pixels = redEffect(pixels);
 
+   // pixels = rgbSplit(pixels);
+    // ctx.globalAlpha = 0.8;
+
+     pixels = greenScreen(pixels);
+    // put them back
     ctx.putImageData(pixels, 0, 0);
   }, 16);
 }
@@ -66,7 +67,7 @@ function takePhoto() {
   const data = canvas.toDataURL('image/jpeg');
   const link = document.createElement('a');
   link.href = data;
-  link.setAttribute('download', 'handsome');
+  link.setAttribute('download', 'image');
   link.innerHTML = `<img src="${data}" alt="Captures Photo" />`;
   strip.insertBefore(link, strip.firstChild);
 }

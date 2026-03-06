@@ -58,3 +58,14 @@ html {
 .strip a:nth-child(5n+3) img { transform: rotate(8deg); }
 .strip a:nth-child(5n+4) img { transform: rotate(-11deg); }
 .strip a:nth-child(5n+5) img { transform: rotate(12deg); }
+
+@media(max-width: 768px){
+  button{
+    background-color:rgba(0,0,0,0.2);
+    height:50px;
+    width:100px;
+    font-size:14px;
+    cursor:pointer;
+
+  }
+}
