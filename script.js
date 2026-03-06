@@ -3,6 +3,8 @@ const canvas = document.querySelector('.photo');
 const ctx = canvas.getContext('2d');
 const strip = document.querySelector('.strip');
 const snap = document.querySelector('.snap');
+const startBtn = document.getElementById('start-camera');
+
 
 function getVideo() {
   navigator.mediaDevices.getUserMedia({ video: true, audio: false })
@@ -25,8 +27,8 @@ function getVideo() {
 }
 
 function paintToCanvas() {
-  const width = video.videoWidth;
-  const height = video.videoHeight;
+  const width = video.videoWidth > 640 ? 640 : video.videoWidth;
+  const height = video.videoHeight * (width / video.videoWidth);
   canvas.width = width;
   canvas.height = height;
 
@@ -107,4 +109,9 @@ function greenScreen(pixels) {
 
 getVideo();
 
-video.addEventListener('canplay', paintToCanvas);
+video.addEventListener('loadedmetadata', () => {
+  paintToCanvas();
+});
+startBtn.addEventListener('click', () => {
+  getVideo();
+});
