@@ -36,6 +36,9 @@ html {
   right: 20px;
   width:200px;
 }
+#start-camera{
+    display:none;
+  }
 
 /*
   Strip!
@@ -60,7 +63,7 @@ html {
 .strip a:nth-child(5n+5) img { transform: rotate(12deg); }
 
 @media(max-width: 768px){
-  button{
+  .takePhoto{
     background-color:rgba(0,0,0,0.2);
     height:50px;
     width:100px;
@@ -68,4 +71,5 @@ html {
     cursor:pointer;
 
   }
+  
 }

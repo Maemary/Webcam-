@@ -8,7 +8,10 @@ const startBtn = document.getElementById('start-camera');
 let intervalId;
 
 // Start camera after user interaction
-
+startBtn.addEventListener('click', () => {
+  startBtn.style.display = 'none'; // hide button
+  getVideo();
+});
 
 
 function getVideo() {
